@@ -23,6 +23,8 @@ python eqform_imagedefn.py \
 
 class ImageDefinition:
 
+    tag = re.compile("<.*?>")
+
     @staticmethod
     def root(title, surveyId, formType):
         return [
@@ -64,7 +66,7 @@ class ImageDefinition:
                                     group["questions"].append(
                                         OrderedDict(
                                             ImageDefinition.question(
-                                                text=o["label"],
+                                                text=ImageDefinition.tag.sub("", o["label"]),
                                                 questionId=o.get("q_code"),
                                             )
                                         )
@@ -73,7 +75,7 @@ class ImageDefinition:
                                 group["questions"].append(
                                     OrderedDict(
                                         ImageDefinition.question(
-                                            text=a["label"],
+                                            text=ImageDefinition.tag.sub("", a["label"]),
                                             questionId=a.get("q_code"),
                                         )
                                     )
