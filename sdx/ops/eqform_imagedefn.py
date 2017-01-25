@@ -1,7 +1,9 @@
 #!/usr/bin/env python
 #   coding: UTF-8
 
+from collections import OrderedDict
 import json
+import pprint
 import sys
 
 __doc__ = """
@@ -19,5 +21,46 @@ python eqform_imagedefn.py \
 
 """
 
+class ImageDefinition:
+
+    def root(title, surveyId, formType):
+        return [
+        ("title", title), ("survey_id", surveyId), ("form_type", formType),
+        ("question_groups", []),
+    ]
+
+    def group(title):
+        return [
+            ("title", title), ("questions", []),
+        ]
+
+    def question(text, questionId):
+        return [("text", text), ("question_id", questionId)]
+
+    @staticmethod
+    def populate(tree):
+        node = OrderedDict()
+        for k, v in tree:
+            if isinstance(v, list):
+                node[k] = [ImageDefinition.populate(v)]
+            else:
+                node[k] = v
+        return node
+
+    @staticmethod
+    def read(data):
+        rv = ImageDefinition.populate(
+            ImageDefinition.root(
+                title=data["title"],
+                surveyId=data["survey_id"],
+                formType=data["questionnaire_id"],
+            )
+        )
+        for qG in data.get("question_groups", []):
+            for q in qG.get("questions", []):
+                print(q)
+        return rv
+
 if __name__ == "__main__":
-    print(json.load(sys.stdin))
+    imgDefn = ImageDefinition.read(json.load(sys.stdin))
+    json.dump(imgDefn, sys.stdout, indent=2)
