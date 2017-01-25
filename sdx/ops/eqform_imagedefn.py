@@ -3,7 +3,7 @@
 
 from collections import OrderedDict
 import json
-import pprint
+import re
 import sys
 
 __doc__ = """
@@ -23,44 +23,63 @@ python eqform_imagedefn.py \
 
 class ImageDefinition:
 
+    @staticmethod
     def root(title, surveyId, formType):
         return [
         ("title", title), ("survey_id", surveyId), ("form_type", formType),
         ("question_groups", []),
     ]
 
+    @staticmethod
     def group(title):
         return [
             ("title", title), ("questions", []),
         ]
 
+    @staticmethod
     def question(text, questionId):
         return [("text", text), ("question_id", questionId)]
 
-    @staticmethod
-    def populate(tree):
-        node = OrderedDict()
-        for k, v in tree:
-            if isinstance(v, list):
-                node[k] = [ImageDefinition.populate(v)]
-            else:
-                node[k] = v
-        return node
-
-    @staticmethod
-    def read(data):
-        rv = ImageDefinition.populate(
+    def read(self, data):
+        rv = OrderedDict(
             ImageDefinition.root(
                 title=data["title"],
                 surveyId=data["survey_id"],
                 formType=data["questionnaire_id"],
             )
         )
-        for qG in data.get("question_groups", []):
-            for q in qG.get("questions", []):
-                print(q)
+        for g in data.get("groups", []):
+            group = OrderedDict(
+                ImageDefinition.group(
+                    title=g["title"],
+                )
+            )
+            rv["question_groups"].append(group)
+            for b in g.get("blocks", []):
+                for s in b.get("sections", []):
+                    for q in s.get("questions", []):
+                        for a in q.get("answers", []):
+                            if a["type"].lower() in ("checkbox"):
+                                for o in a["options"]:
+                                    group["questions"].append(
+                                        OrderedDict(
+                                            ImageDefinition.question(
+                                                text=o["label"],
+                                                questionId=o.get("q_code"),
+                                            )
+                                        )
+                                    )
+                            else:
+                                group["questions"].append(
+                                    OrderedDict(
+                                        ImageDefinition.question(
+                                            text=a["label"],
+                                            questionId=a.get("q_code"),
+                                        )
+                                    )
+                                )
         return rv
 
 if __name__ == "__main__":
-    imgDefn = ImageDefinition.read(json.load(sys.stdin))
+    imgDefn = ImageDefinition().read(json.load(sys.stdin))
     json.dump(imgDefn, sys.stdout, indent=2)
