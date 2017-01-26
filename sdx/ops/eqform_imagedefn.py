@@ -21,6 +21,7 @@ python eqform_imagedefn.py \
 
 """
 
+
 class ImageDefinition:
 
     tag = re.compile("<.*?>")
@@ -28,9 +29,9 @@ class ImageDefinition:
     @staticmethod
     def root(title, surveyId, formType):
         return [
-        ("title", title), ("survey_id", surveyId), ("form_type", formType),
-        ("question_groups", []),
-    ]
+            ("title", title), ("survey_id", surveyId), ("form_type", formType),
+            ("question_groups", []),
+        ]
 
     @staticmethod
     def group(title):
@@ -46,6 +47,10 @@ class ImageDefinition:
         ]
 
     def read(self, data):
+        """
+        Read EQ-style survey definition and flatten it for use by the SDX image generator.
+
+        """
         rv = OrderedDict(
             ImageDefinition.root(
                 title=data["title"],
@@ -64,6 +69,7 @@ class ImageDefinition:
                     for q in s.get("questions", []):
                         number, title = q.get("number"), q.get("title")
                         for a in q.get("answers", []):
+
                             typ = a["type"].lower()
                             if typ in ("checkbox"):
                                 for o in a["options"]:
@@ -93,6 +99,7 @@ class ImageDefinition:
                                 )
 
             if group["questions"]:
+                # We exclude interstitials, etc
                 rv["question_groups"].append(group)
 
         return rv
