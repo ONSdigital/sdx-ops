@@ -39,8 +39,8 @@ class ImageDefinition:
         ]
 
     @staticmethod
-    def question(text, questionId):
-        return [("text", text), ("question_id", questionId)]
+    def question(text, questionId, typ):
+        return [("text", text), ("question_id", questionId), ("type", typ)]
 
     def read(self, data):
         rv = OrderedDict(
@@ -56,30 +56,37 @@ class ImageDefinition:
                     title=g["title"],
                 )
             )
-            rv["question_groups"].append(group)
             for b in g.get("blocks", []):
                 for s in b.get("sections", []):
                     for q in s.get("questions", []):
                         for a in q.get("answers", []):
-                            if a["type"].lower() in ("checkbox"):
+                            typ = a["type"].lower()
+                            if typ in ("checkbox"):
                                 for o in a["options"]:
                                     group["questions"].append(
                                         OrderedDict(
                                             ImageDefinition.question(
                                                 text=ImageDefinition.tag.sub("", o["label"]),
                                                 questionId=o.get("q_code"),
+                                                typ=typ,
                                             )
                                         )
                                     )
                             else:
+                                text = a["label"] or q["title"]
                                 group["questions"].append(
                                     OrderedDict(
                                         ImageDefinition.question(
-                                            text=ImageDefinition.tag.sub("", a["label"]),
+                                            text=ImageDefinition.tag.sub("", text),
                                             questionId=a.get("q_code"),
+                                            typ=typ,
                                         )
                                     )
                                 )
+
+            if group["questions"]:
+                rv["question_groups"].append(group)
+
         return rv
 
 if __name__ == "__main__":
