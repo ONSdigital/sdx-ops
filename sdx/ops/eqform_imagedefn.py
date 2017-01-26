@@ -71,7 +71,7 @@ class ImageDefinition:
                                         OrderedDict(
                                             ImageDefinition.question(
                                                 number=number,
-                                                title=title,
+                                                title=ImageDefinition.tag.sub("", title),
                                                 text=ImageDefinition.tag.sub("", o["label"]),
                                                 questionId=o.get("q_code"),
                                                 typ=typ,
@@ -84,7 +84,7 @@ class ImageDefinition:
                                     OrderedDict(
                                         ImageDefinition.question(
                                             number=number,
-                                            title=title,
+                                            title=ImageDefinition.tag.sub("", title),
                                             text=ImageDefinition.tag.sub("", text),
                                             questionId=a.get("q_code"),
                                             typ=typ,
