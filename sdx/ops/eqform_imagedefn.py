@@ -39,8 +39,11 @@ class ImageDefinition:
         ]
 
     @staticmethod
-    def question(text, questionId, typ):
-        return [("text", text), ("question_id", questionId), ("type", typ)]
+    def question(number, title, text, questionId, typ):
+        return [
+            ("number", number), ("title", title),
+            ("text", text), ("question_id", questionId), ("type", typ)
+        ]
 
     def read(self, data):
         rv = OrderedDict(
@@ -59,6 +62,7 @@ class ImageDefinition:
             for b in g.get("blocks", []):
                 for s in b.get("sections", []):
                     for q in s.get("questions", []):
+                        number, title = q.get("number"), q.get("title")
                         for a in q.get("answers", []):
                             typ = a["type"].lower()
                             if typ in ("checkbox"):
@@ -66,6 +70,8 @@ class ImageDefinition:
                                     group["questions"].append(
                                         OrderedDict(
                                             ImageDefinition.question(
+                                                number=number,
+                                                title=title,
                                                 text=ImageDefinition.tag.sub("", o["label"]),
                                                 questionId=o.get("q_code"),
                                                 typ=typ,
@@ -77,6 +83,8 @@ class ImageDefinition:
                                 group["questions"].append(
                                     OrderedDict(
                                         ImageDefinition.question(
+                                            number=number,
+                                            title=title,
                                             text=ImageDefinition.tag.sub("", text),
                                             questionId=a.get("q_code"),
                                             typ=typ,
