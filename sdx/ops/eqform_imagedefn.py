@@ -40,10 +40,11 @@ class ImageDefinition:
         ]
 
     @staticmethod
-    def question(number, title, text, questionId, typ):
+    def question(number, title, text, questionId, typ, options):
         return [
             ("number", number), ("title", title),
-            ("text", text), ("question_id", questionId), ("type", typ)
+            ("text", text), ("question_id", questionId), ("type", typ),
+            ("options", options)
         ]
 
     def read(self, data):
@@ -81,6 +82,7 @@ class ImageDefinition:
                                                 text=ImageDefinition.tag.sub("", o["label"]),
                                                 questionId=o.get("q_code"),
                                                 typ=typ,
+                                                options=[o["value"]],
                                             )
                                         )
                                     )
@@ -94,6 +96,9 @@ class ImageDefinition:
                                             text=ImageDefinition.tag.sub("", text),
                                             questionId=a.get("q_code"),
                                             typ=typ,
+                                            options=[
+                                                o.get("value") for o in a.get("options", [])
+                                            ]
                                         )
                                     )
                                 )
