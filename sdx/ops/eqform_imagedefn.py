@@ -85,7 +85,7 @@ class ImageDefinition:
                                         )
                                     )
                             else:
-                                text = a["label"] or q["title"]
+                                text = a.get("label") or q.get("title")
                                 group["questions"].append(
                                     OrderedDict(
                                         ImageDefinition.question(
