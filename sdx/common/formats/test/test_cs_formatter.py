@@ -1,6 +1,5 @@
 from collections import OrderedDict
 import datetime
-import itertools
 import json
 import unittest
 
@@ -52,7 +51,7 @@ class BatchFileTests(unittest.TestCase):
         ], rv)
 
     def test_idbr_receipt(self):
-        src = pkg_resources.resource_string(__name__, "replies/eq-mwss.json")
+        src = pkg_resources.resource_string("sdx.common.test", "data/eq-mwss.json")
         reply = json.loads(src.decode("utf-8"))
         reply["tx_id"] = "27923934-62de-475c-bc01-433c09fd38b8"
         ids = Survey.identifiers(reply, batch_nr=3866)
@@ -60,7 +59,7 @@ class BatchFileTests(unittest.TestCase):
         self.assertEqual("12346789012:A:134:201605", rv)
 
     def test_identifiers(self):
-        src = pkg_resources.resource_string(__name__, "replies/eq-mwss.json")
+        src = pkg_resources.resource_string("sdx.common.test", "data/eq-mwss.json")
         reply = json.loads(src.decode("utf-8"))
         reply["tx_id"] = "27923934-62de-475c-bc01-433c09fd38b8"
         reply["collection"]["period"] = "200911"
@@ -77,7 +76,7 @@ class BatchFileTests(unittest.TestCase):
         self.assertEqual("200911", ids.period)
 
     def test_pck_from_transformed_data(self):
-        src = pkg_resources.resource_string(__name__, "replies/eq-mwss.json")
+        src = pkg_resources.resource_string("sdx.common.test", "data/eq-mwss.json")
         reply = json.loads(src.decode("utf-8"))
         reply["tx_id"] = "27923934-62de-475c-bc01-433c09fd38b8"
         reply["survey_id"] = "134"
@@ -97,33 +96,3 @@ class BatchFileTests(unittest.TestCase):
             "0140 00000000124",
             "0151 00000217222",
         ], rv)
-
-
-class PackingTests(unittest.TestCase):
-
-    def test_tempdir(self):
-        response = {
-            "survey_id": "134",
-            "tx_id": "27923934-62de-475c-bc01-433c09fd38b8",
-            "collection": {
-                "instrument_id": "0005",
-                "period": "201704"
-            },
-            "metadata": {
-                "user_id": "123456789",
-                "ru_ref": "12345678901A"
-            },
-            "submitted_at": "2017-04-12T13:01:26Z",
-            "data": {}
-        }
-        tfr = MWSSTransformer(response)
-        self.assertEqual(
-            "REC1204_0000.DAT",
-            CSFormatter.idbr_name(
-                **tfr.ids._asdict()
-            )
-        )
-        try:
-            tfr.pack(img_seq=itertools.count())
-        except KeyError:
-            self.fail("TODO: define pages of survey.")
