@@ -189,7 +189,9 @@ class AsyncConsumer(object):
 
         """
         logger.info('Declaring queue', name=queue_name)
-        self._channel.queue_declare(self.on_queue_declareok, queue_name, durable=self.DURABLE_QUEUE)
+        self._channel.queue_declare(
+            self.on_queue_declareok, queue_name, durable=self.DURABLE_QUEUE
+        )
 
     def on_queue_declareok(self, method_frame):
         """Method invoked by pika when the Queue.Declare RPC call made in
