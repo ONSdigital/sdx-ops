@@ -27,3 +27,35 @@ class SurveyTests(unittest.TestCase):
         rv = Survey.parse_timestamp("11/07/2017")
         self.assertNotIsInstance(rv, datetime.datetime)
         self.assertIsInstance(rv, datetime.date)
+
+    def test_load_survey(self):
+        ids = Survey.identifiers({
+            "survey_id": "134",
+            "tx_id": "27923934-62de-475c-bc01-433c09fd38b8",
+            "collection": {
+                "instrument_id": "0005",
+                "period": "201704"
+            },
+            "metadata": {
+                "user_id": "123456789",
+                "ru_ref": "12345678901A"
+            }
+        })
+        rv = Survey.load_survey(ids)
+        self.assertIsNotNone(rv)
+
+    def test_load_survey_miss(self):
+        ids = Survey.identifiers({
+            "survey_id": "127",
+            "tx_id": "27923934-62de-475c-bc01-433c09fd38b8",
+            "collection": {
+                "instrument_id": "0001",
+                "period": "201704"
+            },
+            "metadata": {
+                "user_id": "123456789",
+                "ru_ref": "12345678901A"
+            }
+        })
+        rv = Survey.load_survey(ids)
+        self.assertIsNone(rv)
