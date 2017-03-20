@@ -8,7 +8,6 @@ import os
 import sys
 import uuid
 
-import arrow
 from reportlab.lib import colors
 from reportlab.lib.pagesizes import A4
 from reportlab.lib.styles import getSampleStyleSheet
@@ -65,17 +64,6 @@ class PDFTransformer(object):
         buffer.close()
 
         return pdf
-
-    def render_to_file(self):
-        rndm_name = uuid.uuid4()
-
-        os.makedirs("./tmp/%s" % rndm_name)
-
-        tmp_name = "./tmp/%s/%s.pdf" % (rndm_name, rndm_name)
-        doc = SimpleDocTemplate(tmp_name, pagesize=A4)
-        doc.build(self.get_elements(self.survey, self.response))
-
-        return os.path.realpath(tmp_name)
 
     @staticmethod
     def get_elements(survey, response):
