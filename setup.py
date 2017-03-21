@@ -30,7 +30,7 @@ installRequirements = [
 ]
 
 setup(
-    name="sdx-ops",
+    name="sdx-common",
     version=version,
     description="Operations scripts for SDX deployment and administration.",
     author="D Haynes",
@@ -44,12 +44,19 @@ setup(
         "License :: OSI Approved :: Apache Software License",
     ],
     packages=[
-        "sdx.ops",
-        "sdx.ops.test",
+        #"sdx.ops",
+        #"sdx.ops.test",
         "sdx.common",
         "sdx.common.test",
+        "sdx.common.formats",
+        "sdx.common.formats.test",
+        "sdx.common.transforms",
+        "sdx.common.transforms.test",
     ],
     package_data={
+        "sdx.common.test": [
+            "data/*.json",
+        ],
         "sdx.ops": [
             "doc/*.rst",
             "doc/_templates/*.css",
