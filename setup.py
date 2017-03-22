@@ -8,14 +8,14 @@ from setuptools import setup
 
 try:
     # For setup.py install
-    from sdx.ops import __version__ as version
+    from sdx.common import __version__ as version
 except ImportError:
     # For pip installations
     version = str(
         ast.literal_eval(
             open(os.path.join(
                 os.path.dirname(__file__),
-                "sdx", "ops", "__init__.py"),
+                "sdx", "common", "__init__.py"),
                 'r').read().split("=")[-1].strip()
         )
     )
@@ -44,8 +44,6 @@ setup(
         "License :: OSI Approved :: Apache Software License",
     ],
     packages=[
-        #"sdx.ops",
-        #"sdx.ops.test",
         "sdx.common",
         "sdx.common.test",
         "sdx.common.formats",
@@ -54,6 +52,9 @@ setup(
         "sdx.common.transforms.test",
     ],
     package_data={
+        "sdx.common": [
+            "requirements.txt",
+        ],
         "sdx.common.test": [
             "data/*.json",
         ],
