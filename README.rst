@@ -9,7 +9,7 @@ Utilities and classes for SDX apps.
 sdx.common
 ==========
 
-A common library for SDX apps. App projects declare their dependence on `sdx-common` which
+A common library for SDX apps. App projects declare their dependence on *sdx-common* which
 is deployed and installed via pip.
 
 sdx.ops
