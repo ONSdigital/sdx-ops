@@ -9,8 +9,10 @@ from reportlab.platypus import SimpleDocTemplate
 from reportlab.lib.pagesizes import A4
 from structlog import wrap_logger
 
-from transform.transformers.ImageTransformer import ImageTransformer
-from transform.transformers.PDFTransformer import PDFTransformer
+from sdx.common.formats.cs_formatter import CSFormatter
+from sdx.common.survey import Survey
+from sdx.common.transforms.ImageTransformer import ImageTransformer
+from sdx.common.transforms.PDFTransformer import PDFTransformer
 
 __doc__ = """Transform MWSS survey data into formats required downstream.
 
@@ -40,11 +42,12 @@ class Transformer:
             for qNr in (rng if isinstance(rng, range) else [rng])
         ])
 
-    def transform(self, data, survey=None):
+    @classmethod
+    def transform(cls, data, survey=None):
         """Perform a transform on survey data."""
         return OrderedDict(
             (qid, fn(qid, data, dflt, survey))
-            for qid, (dflt, fn) in self.ops().items()
+            for qid, (dflt, fn) in cls.ops().items()
         )
 
     @staticmethod
@@ -76,6 +79,10 @@ class Transformer:
         else:
             self.log = Survey.bind_logger(log, self.ids)
 
+        for attr in ("defn", "package", "pattern"):
+            if not hasattr(self.__class__, attr):
+                raise UserWarning("Missing class attribute: {0}".format(attr))
+
     def pack(self, img_seq=None):
         """Perform transformation on the survey data and pack the output into a zip file.
 
@@ -83,7 +90,7 @@ class Transformer:
         The object maintains a temporary directory while the output is generated.
 
         """
-        survey = Survey.load_survey(self.ids)
+        survey = Survey.load_survey(self.ids, self.package, self.pattern)
         manifest = []
         with tempfile.TemporaryDirectory(prefix="sdx_", dir="tmp") as locn:
             # Do transform and write PCK
