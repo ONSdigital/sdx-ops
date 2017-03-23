@@ -94,21 +94,8 @@ class ImageTransformer(object):
             os.rename(imageFile, fp)
             yield fp
 
-    def create_image_index(self, images):
-        '''
-        Takes a list of images and creates a index csv from them
-        '''
-        if not images:
-            return None
-
-        def end_column(n):
-            return "{0:03}".format(n + 1) if n else "001,0"
- 
-        ids = Survey.identifiers(self.response)
-        image_path = self.settings.FTP_HOST + self.settings.SDX_FTP_IMAGE_PATH + "\\Images"
-        period = Survey.parse_timestamp(ids.period)
-
-        lines = (
+    def index_lines(self, ids, images):
+        return (
             ",".join([
                 ids.ts.strftime("DD/MM/YYYY HH:mm:ss"),
                 "\\".join([self.settings.SDX_FTP_IMAGE_PATH, img]),
@@ -117,12 +104,22 @@ class ImageTransformer(object):
                 ids.survey_id,
                 ids.inst_id,
                 ids.ru_ref,
-                period.strftime("%Y%m"),
-                end_column(n)
+                Survey.parse_timestamp(ids.period).strftime("%Y%m"),
+                "{0:03}".format(n + 1) if n else "001,0"
             ])
             for n, img in enumerate(images)
         )
- 
+
+    def create_image_index(self, images):
+        '''
+        Takes a list of images and creates a index csv from them
+        '''
+        if not images:
+            return None
+
+        ids = Survey.identifiers(self.response)
+        image_path = self.settings.FTP_HOST + self.settings.SDX_FTP_IMAGE_PATH + "\\Images"
+
         for i in images:
             self.logger.info("Adding image to index", file=(image_path + os.path.basename(i)))
 
@@ -135,7 +132,7 @@ class ImageTransformer(object):
         locn = os.path.dirname(images[0])
         path = os.path.join(locn, self.index_file)
         with open(path, "w") as fh:
-            fh.write("\n".join(lines))
+            fh.write("\n".join(self.index_lines(ids, images)))
         return path
 
     def create_zip(self, images, index):
