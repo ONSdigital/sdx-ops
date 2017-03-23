@@ -28,6 +28,11 @@ class SurveyTests(unittest.TestCase):
         self.assertNotIsInstance(rv, datetime.datetime)
         self.assertIsInstance(rv, datetime.date)
 
+    def test_date_period(self):
+        rv = Survey.parse_timestamp("201605")
+        self.assertNotIsInstance(rv, datetime.datetime)
+        self.assertIsInstance(rv, datetime.date)
+
     def test_load_survey(self):
         ids = Survey.identifiers({
             "survey_id": "134",

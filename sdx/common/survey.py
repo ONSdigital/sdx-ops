@@ -73,6 +73,14 @@ class Survey:
         try:
             return cls.strptime(text, "%d/%m/%Y").date()
         except ValueError:
+            pass
+
+        if len(text) != 6:
+            return None
+
+        try:
+            return cls.strptime(text + "01", "%Y%m%d").date()
+        except ValueError:
             return None
 
     @staticmethod

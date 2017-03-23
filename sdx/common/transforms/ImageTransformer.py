@@ -101,15 +101,14 @@ class ImageTransformer(object):
         if not images:
             return None
 
-        def strangeness(n):
-            return "{03:0}".format(n + 1) if n else "001,0"
+        def end_column(n):
+            return "{0:03}".format(n + 1) if n else "001,0"
  
         ids = Survey.identifiers(self.response)
         image_path = self.settings.FTP_HOST + self.settings.SDX_FTP_IMAGE_PATH + "\\Images"
         period = Survey.parse_timestamp(ids.period)
 
-        print(period)
-        return "\n".join(
+        lines = (
             ",".join([
                 ids.ts.strftime("DD/MM/YYYY HH:mm:ss"),
                 "\\".join([self.settings.SDX_FTP_IMAGE_PATH, img]),
@@ -118,27 +117,25 @@ class ImageTransformer(object):
                 ids.survey_id,
                 ids.inst_id,
                 ids.ru_ref,
-                period,
-                strangeness(n)
+                period.strftime("%Y%m"),
+                end_column(n)
             ])
             for n, img in enumerate(images)
         )
-        template_output = template.render(
-            SDX_FTP_IMAGES_PATH=image_path,
-            images=[os.path.basename(i) for i in images],
-            response=self.response,
-            creation_time=creation_time
-        )
-        
-        msg = "Adding image to index"
-        [self.logger.info(msg, file=(image_path + os.path.basename(i))) for i in images]
+ 
+        for i in images:
+            self.logger.info("Adding image to index", file=(image_path + os.path.basename(i)))
 
-        self.index_file = "EDC_%s_%s_%04d.csv" % (self.survey['survey_id'], submission_date_str, self.sequence_no)
+        self.index_file = "EDC_{0}_{1}_{2:04}.csv".format(
+            ids.survey_id,
+            ids.user_ts.strftime("YYYYMMDD"),
+            self.sequence_no
+        )
 
         locn = os.path.dirname(images[0])
         path = os.path.join(locn, self.index_file)
         with open(path, "w") as fh:
-            fh.write(template_output)
+            fh.write("\n".join(lines))
         return path
 
     def create_zip(self, images, index):
