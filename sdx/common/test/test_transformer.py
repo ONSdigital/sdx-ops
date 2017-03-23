@@ -1,3 +1,4 @@
+from collections import namedtuple
 from collections import OrderedDict
 import datetime
 from functools import partial
@@ -531,7 +532,16 @@ class BatchFileTests(unittest.TestCase):
 
 class PackingTests(unittest.TestCase):
 
+    Settings = namedtuple(
+        "Settings",
+        [
+            "FTP_HOST",
+            "SDX_FTP_IMAGE_PATH",
+        ]
+    )
+
     def test_pack_mwss(self):
+        settings = PackingTests.Settings("\\NFS", "SDX")
         src = pkg_resources.resource_string("sdx.common.test", "data/eq-mwss.json")
         reply = json.loads(src.decode("utf-8"))
         tfr = TestTransformer(reply)
@@ -542,6 +552,6 @@ class PackingTests(unittest.TestCase):
             )
         )
         try:
-            tfr.pack(img_seq=itertools.count(), tmp=None)
+            tfr.pack(settings=settings, img_seq=itertools.count(), tmp=None)
         except KeyError:
             self.fail("TODO: define pages of survey.")

@@ -15,6 +15,7 @@ import subprocess
 import sys
 import zipfile
 
+import arrow
 import requests
 from requests.adapters import HTTPAdapter
 from requests.packages.urllib3.exceptions import MaxRetryError
@@ -107,18 +108,19 @@ class ImageTransformer(object):
         image_path = self.settings.FTP_HOST + self.settings.SDX_FTP_IMAGE_PATH + "\\Images"
         period = Survey.parse_timestamp(ids.period)
 
+        print(period)
         return "\n".join(
-            ",".join(
-                arrow.get(ids.ts).to(timezone).format("DD/MM/YYYY HH:mm:ss"),
-                "\\".join(settings.SDX_FTP_IMAGES_PATH, img),
-                arrow.get(ids.ts).to(timezone).format("YYYYMMDD"),
+            ",".join([
+                ids.ts.strftime("DD/MM/YYYY HH:mm:ss"),
+                "\\".join([self.settings.SDX_FTP_IMAGE_PATH, img]),
+                ids.ts.strftime("YYYYMMDD"),
                 os.path.splitext(img)[0],
                 ids.survey_id,
                 ids.inst_id,
                 ids.ru_ref,
                 period,
                 strangeness(n)
-            )
+            ])
             for n, img in enumerate(images)
         )
         template_output = template.render(
