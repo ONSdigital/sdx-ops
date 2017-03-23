@@ -83,7 +83,7 @@ class Transformer:
             if not hasattr(self.__class__, attr):
                 raise UserWarning("Missing class attribute: {0}".format(attr))
 
-    def pack(self, img_seq=None):
+    def pack(self, settings=None, img_seq=None, tmp="tmp"):
         """Perform transformation on the survey data and pack the output into a zip file.
 
         Return the contents of the zip as bytes.
@@ -92,7 +92,7 @@ class Transformer:
         """
         survey = Survey.load_survey(self.ids, self.package, self.pattern)
         manifest = []
-        with tempfile.TemporaryDirectory(prefix="sdx_", dir="tmp") as locn:
+        with tempfile.TemporaryDirectory(prefix="sdx_", dir=tmp) as locn:
             # Do transform and write PCK
             data = self.transform(self.response["data"], survey)
             f_name = CSFormatter.pck_name(**self.ids._asdict())
@@ -112,7 +112,7 @@ class Transformer:
             doc.build(PDFTransformer.get_elements(survey, self.response))
 
             # Create page images from PDF
-            img_tfr = ImageTransformer(self.log, survey, self.response)
+            img_tfr = ImageTransformer(self.log, settings, survey, self.response)
             images = list(img_tfr.create_image_sequence(fp, nmbr_seq=img_seq))
             for img in images:
                 f_name = os.path.basename(img)

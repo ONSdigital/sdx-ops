@@ -16,8 +16,11 @@ import sys
 import zipfile
 
 import requests
+from requests.adapters import HTTPAdapter
 from requests.packages.urllib3.exceptions import MaxRetryError
+from requests.packages.urllib3.util.retry import Retry
 
+from sdx.common.survey import Survey
 from sdx.common.transforms.PDFTransformer import PDFTransformer
 
 __doc__ = """
@@ -65,8 +68,8 @@ class ImageTransformer(object):
         adapter = self.session.adapters["http://"]
         if adapter.max_retries.total != 5:
             retries = Retry(total=5, backoff_factor=0.1)
-            session.mount("http://", HTTPAdapter(max_retries=retries))
-            session.mount("https://", HTTPAdapter(max_retries=retries))
+            self.session.mount("http://", HTTPAdapter(max_retries=retries))
+            self.session.mount("https://", HTTPAdapter(max_retries=retries))
 
     def get_image_sequence_numbers(self):
         sequence_numbers = []
@@ -100,8 +103,8 @@ class ImageTransformer(object):
         def strangeness(n):
             return "{03:0}".format(n + 1) if n else "001,0"
  
-        ids = Session.identifiers(self.response)
-        image_path = settings.FTP_HOST + settings.SDX_FTP_IMAGE_PATH + "\\Images"
+        ids = Survey.identifiers(self.response)
+        image_path = self.settings.FTP_HOST + self.settings.SDX_FTP_IMAGE_PATH + "\\Images"
         period = Survey.parse_timestamp(ids.period)
 
         return "\n".join(

@@ -531,29 +531,17 @@ class BatchFileTests(unittest.TestCase):
 
 class PackingTests(unittest.TestCase):
 
-    def test_tempdir(self):
-        response = {
-            "survey_id": "134",
-            "tx_id": "27923934-62de-475c-bc01-433c09fd38b8",
-            "collection": {
-                "instrument_id": "0005",
-                "period": "201704"
-            },
-            "metadata": {
-                "user_id": "123456789",
-                "ru_ref": "12345678901A"
-            },
-            "submitted_at": "2017-04-12T13:01:26Z",
-            "data": {}
-        }
-        tfr = TestTransformer(response)
+    def test_pack_mwss(self):
+        src = pkg_resources.resource_string("sdx.common.test", "data/eq-mwss.json")
+        reply = json.loads(src.decode("utf-8"))
+        tfr = TestTransformer(reply)
         self.assertEqual(
-            "REC1204_0000.DAT",
+            "REC0103_0000.DAT",
             CSFormatter.idbr_name(
                 **tfr.ids._asdict()
             )
         )
         try:
-            tfr.pack(img_seq=itertools.count())
+            tfr.pack(img_seq=itertools.count(), tmp=None)
         except KeyError:
             self.fail("TODO: define pages of survey.")
