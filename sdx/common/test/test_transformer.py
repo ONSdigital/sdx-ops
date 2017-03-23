@@ -541,19 +541,6 @@ class PackingTests(unittest.TestCase):
         ]
     )
 
-    def test_mwss_index(self):
-        settings = PackingTests.Settings("\\NFS", "SDX")
-        src = pkg_resources.resource_string("sdx.common.test", "data/eq-mwss.json")
-        reply = json.loads(src.decode("utf-8"))
-        check = pkg_resources.resource_string(
-            "sdx.common.test", "data/EDC_134_20170301_1000.csv"
-        )
-        tfr = TestTransformer(reply)
-        self.assertEqual(
-            check.splitlines(),
-            tfr.index_lines()
-        )
-
     def test_mwss_pack(self):
         settings = PackingTests.Settings("\\NFS", "SDX")
         src = pkg_resources.resource_string("sdx.common.test", "data/eq-mwss.json")
