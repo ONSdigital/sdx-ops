@@ -15,12 +15,10 @@ import subprocess
 import sys
 import zipfile
 
+import requests
 from requests.packages.urllib3.exceptions import MaxRetryError
 
 from sdx.common.transforms.PDFTransformer import PDFTransformer
-from transform import settings
-from transform.settings import session
-from transform.views.image_filters import get_env, format_date
 
 __doc__ = """
 SDX Image Transformer.
@@ -34,6 +32,8 @@ python -m transform.transformers.ImageTransformer --survey transform/surveys/144
 
 
 class ImageTransformer(object):
+
+    session = requests.Session()
 
     @staticmethod
     def create_pdf(survey, data):
@@ -55,11 +55,18 @@ class ImageTransformer(object):
         )
         return sorted(glob.glob("%s/%s-*.jpg" % (path, rootName)))
 
-    def __init__(self, logger, survey, response_data, sequence_no=1000):
+    def __init__(self, logger, settings, survey, response_data, sequence_no=1000):
         self.logger = logger
+        self.settings = settings
         self.survey = survey
         self.response = response_data
         self.sequence_no = sequence_no
+
+        adapter = self.session.adapters["http://"]
+        if adapter.max_retries.total != 5:
+            retries = Retry(total=5, backoff_factor=0.1)
+            session.mount("http://", HTTPAdapter(max_retries=retries))
+            session.mount("https://", HTTPAdapter(max_retries=retries))
 
     def get_image_sequence_numbers(self):
         sequence_numbers = []
@@ -89,18 +96,28 @@ class ImageTransformer(object):
         '''
         if not images:
             return None
-        env = get_env()
-        template = env.get_template('csv.tmpl')
 
-        current_time = datetime.datetime.utcnow()
-        creation_time = {
-            'short': format_date(current_time, 'short'),
-            'long': format_date(current_time)
-        }
-        submission_date = dateutil.parser.parse(self.response['submitted_at'])
-        submission_date_str = format_date(submission_date, 'short')
-
+        def strangeness(n):
+            return "{03:0}".format(n + 1) if n else "001,0"
+ 
+        ids = Session.identifiers(self.response)
         image_path = settings.FTP_HOST + settings.SDX_FTP_IMAGE_PATH + "\\Images"
+        period = Survey.parse_timestamp(ids.period)
+
+        return "\n".join(
+            ",".join(
+                arrow.get(ids.ts).to(timezone).format("DD/MM/YYYY HH:mm:ss"),
+                "\\".join(settings.SDX_FTP_IMAGES_PATH, img),
+                arrow.get(ids.ts).to(timezone).format("YYYYMMDD"),
+                os.path.splitext(img)[0],
+                ids.survey_id,
+                ids.inst_id,
+                ids.ru_ref,
+                period,
+                strangeness(n)
+            )
+            for n, img in enumerate(images)
+        )
         template_output = template.render(
             SDX_FTP_IMAGES_PATH=image_path,
             images=[os.path.basename(i) for i in images],
