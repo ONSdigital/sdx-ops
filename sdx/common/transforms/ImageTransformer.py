@@ -97,10 +97,15 @@ class ImageTransformer(object):
     def index_lines(self, ids, images):
         return (
             ",".join([
-                ids.ts.strftime("DD/MM/YYYY HH:mm:ss"),
-                "\\".join([self.settings.SDX_FTP_IMAGE_PATH, img]),
-                ids.ts.strftime("YYYYMMDD"),
-                os.path.splitext(img)[0],
+                ids.ts.strftime("%d/%m/%Y %H:%M:%S"),
+                "\\".join([
+                    self.settings.FTP_HOST,
+                    self.settings.SDX_FTP_IMAGE_PATH,
+                    "Images",
+                    os.path.basename(img)
+                ]),
+                ids.ts.strftime("%Y%m%d"),
+                os.path.splitext(os.path.basename(img))[0],
                 ids.survey_id,
                 ids.inst_id,
                 ids.ru_ref,

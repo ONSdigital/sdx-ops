@@ -1,3 +1,4 @@
+import datetime
 import itertools
 import json
 import logging
@@ -16,8 +17,17 @@ from sdx.common.transforms.PDFTransformer import PDFTransformer
 
 class ImageTransformTests(unittest.TestCase):
 
+    def setUp(self):
+        self.max_diff, self.maxDiff = self.maxDiff, None
+
+    def tearDown(self):
+        self.maxDiff = self.max_diff
+
     def test_mwss_index(self):
-        settings = PackingTests.Settings("\\NFS", "SDX")
+        settings = PackingTests.Settings(
+            "\\\\NP3RVWAPXX370\\SDX_preprod",
+            "EDC_QImages"
+        )
         log = logging.getLogger("")
 
         reply = json.loads(
@@ -34,9 +44,11 @@ class ImageTransformTests(unittest.TestCase):
 
         check = pkg_resources.resource_string(
             "sdx.common.test", "data/EDC_134_20170301_1000.csv"
-        )
+        ).decode("utf-8")
 
-        ids = Survey.identifiers(reply)
+        ids = Survey.identifiers(reply)._replace(
+            ts=datetime.datetime(2017, 3, 7, 9, 45, 4)
+        )
 
         with tempfile.TemporaryDirectory(prefix="sdx_") as locn:
 
@@ -51,5 +63,5 @@ class ImageTransformTests(unittest.TestCase):
 
             self.assertEqual(
                 check.splitlines(),
-                img_tfr.index_lines(ids, images)
+                list(img_tfr.index_lines(ids, images))
             )
