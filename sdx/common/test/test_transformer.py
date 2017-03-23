@@ -6,6 +6,7 @@ import itertools
 import json
 import re
 import unittest
+import zipfile
 
 import pkg_resources
 
@@ -540,7 +541,20 @@ class PackingTests(unittest.TestCase):
         ]
     )
 
-    def test_pack_mwss(self):
+    def test_mwss_index(self):
+        settings = PackingTests.Settings("\\NFS", "SDX")
+        src = pkg_resources.resource_string("sdx.common.test", "data/eq-mwss.json")
+        reply = json.loads(src.decode("utf-8"))
+        check = pkg_resources.resource_string(
+            "sdx.common.test", "data/EDC_134_20170301_1000.csv"
+        )
+        tfr = TestTransformer(reply)
+        self.assertEqual(
+            check.splitlines(),
+            tfr.index_lines()
+        )
+
+    def test_mwss_pack(self):
         settings = PackingTests.Settings("\\NFS", "SDX")
         src = pkg_resources.resource_string("sdx.common.test", "data/eq-mwss.json")
         reply = json.loads(src.decode("utf-8"))
@@ -551,7 +565,23 @@ class PackingTests(unittest.TestCase):
                 **tfr.ids._asdict()
             )
         )
-        try:
-            tfr.pack(settings=settings, img_seq=itertools.count(), tmp=None)
-        except KeyError:
-            self.fail("TODO: define pages of survey.")
+        zip_data = tfr.pack(settings=settings, img_seq=itertools.count(), tmp=None)
+
+        with zipfile.ZipFile(zip_data) as zip_file:
+            actual = zip_file.namelist()
+
+        expected = [
+            "EDC_QData/134_0000",
+            "EDC_QReceipts/REC0103_0000.DAT",
+            "EDC_QImages/Images/S000000000.JPG",
+            "EDC_QImages/Images/S000000001.JPG",
+            "EDC_QImages/Images/S000000002.JPG",
+            "EDC_QImages/Images/S000000003.JPG",
+            "EDC_QImages/Images/S000000004.JPG",
+            "EDC_QImages/Images/S000000005.JPG",
+            "EDC_QImages/Images/S000000006.JPG",
+            "EDC_QImages/Images/S000000007.JPG",
+            "EDC_QImages/Images/S000000008.JPG",
+            "EDC_QImages/Index/EDC_134_20170301_1000.csv"
+        ]
+        self.assertEqual(expected, actual)

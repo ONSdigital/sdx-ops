@@ -125,7 +125,7 @@ class ImageTransformer(object):
 
         self.index_file = "EDC_{0}_{1}_{2:04}.csv".format(
             ids.survey_id,
-            ids.user_ts.strftime("YYYYMMDD"),
+            ids.user_ts.strftime("%Y%m%d"),
             self.sequence_no
         )
 
