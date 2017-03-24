@@ -15,6 +15,7 @@ from sdx.common.test.test_transformer import PackingTests
 from sdx.common.transforms.ImageTransformer import ImageTransformer
 from sdx.common.transforms.PDFTransformer import PDFTransformer
 
+
 class ImageTransformTests(unittest.TestCase):
 
     def setUp(self):

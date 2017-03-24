@@ -6,7 +6,6 @@ from io import BytesIO
 import json
 import os
 import sys
-import uuid
 
 import arrow
 from reportlab.lib import colors

@@ -70,6 +70,7 @@ class TestTransformer(Transformer):
     package = "sdx.common.test"
     pattern = "data/{survey_id}.{inst_id}.json"
 
+
 class LogicTests(unittest.TestCase):
 
     def test_weekly_increase(self):

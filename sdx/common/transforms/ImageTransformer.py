@@ -2,8 +2,6 @@
 #   coding: UTF-8
 
 import argparse
-import datetime
-import dateutil.parser
 import glob
 from io import BytesIO
 import itertools
@@ -15,7 +13,6 @@ import subprocess
 import sys
 import zipfile
 
-import arrow
 import requests
 from requests.adapters import HTTPAdapter
 from requests.packages.urllib3.exceptions import MaxRetryError
@@ -172,10 +169,18 @@ class ImageTransformer(object):
     def response_ok(self, res):
 
         if res.status_code == 200:
-            self.logger.info("Returned from sdx-sequence", request_url=res.url, status=res.status_code)
+            self.logger.info(
+                "Returned from sdx-sequence",
+                request_url=res.url,
+                status=res.status_code
+            )
             return True
         else:
-            self.logger.error("Returned from sdx-sequence", request_url=res.url, status=res.status_code)
+            self.logger.error(
+                "Returned from sdx-sequence",
+                request_url=res.url,
+                status=res.status_code
+            )
             return False
 
     def remote_call(self, request_url, json=None):
@@ -185,16 +190,16 @@ class ImageTransformer(object):
             r = None
 
             if json:
-                r = session.post(request_url, json=json)
+                r = self.session.post(request_url, json=json)
             else:
-                r = session.get(request_url)
+                r = self.session.get(request_url)
 
             return r
         except MaxRetryError:
             self.logger.error("Max retries exceeded (5)", request_url=request_url)
 
     def get_image_sequence_no(self):
-        sequence_url = settings.SDX_SEQUENCE_URL + "/image-sequence"
+        sequence_url = self.settings.SDX_SEQUENCE_URL + "/image-sequence"
 
         r = self.remote_call(sequence_url)
 
