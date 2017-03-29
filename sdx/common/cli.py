@@ -11,6 +11,7 @@ __doc__ = """
 SDX CLI Interface
 """
 
+
 def logging_format(service="sdx-common"):
     return "%(asctime)s|%(levelname)s: {0}: %(message)s".format(service)
 

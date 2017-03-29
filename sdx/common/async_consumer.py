@@ -94,7 +94,7 @@ class AsyncConsumer(object):
             self._connection.ioloop.stop()
         else:
             self.log.warning('Connection closed, reopening in 5 seconds',
-                           reply_code=reply_code, reply_text=reply_text)
+                             reply_code=reply_code, reply_text=reply_text)
             self._connection.add_timeout(5, self.reconnect)
 
     def on_connection_open(self, unused_connection):
@@ -143,7 +143,7 @@ class AsyncConsumer(object):
 
         """
         self.log.warning('Channel was closed', channel=channel,
-                       reply_code=reply_code, reply_text=reply_text)
+                         reply_code=reply_code, reply_text=reply_text)
         self._connection.close()
 
     def on_channel_open(self, channel):
@@ -155,7 +155,7 @@ class AsyncConsumer(object):
         :param pika.channel.Channel channel: The channel object
 
         """
-        self.log.info('Channel opened')
+        self.log.info('Channel opened', channel=channel)
         self._channel = channel
         self.add_on_channel_close_callback()
         self.setup_exchange(self.EXCHANGE)
@@ -226,7 +226,7 @@ class AsyncConsumer(object):
 
         """
         self.log.info('Consumer was cancelled remotely, shutting down: %r',
-                    method_frame)
+                      method_frame)
         if self._channel:
             self._channel.close()
 
@@ -273,8 +273,11 @@ class AsyncConsumer(object):
         :param str|unicode body: The message body
 
         """
-        self.log.info('Received message',
-                    delivery_tag=basic_deliver.delivery_tag, app_id=properties.app_id, msg=body)
+        self.log.info(
+            'Received message',
+            delivery_tag=basic_deliver.delivery_tag, app_id=properties.app_id,
+            msg=body
+        )
         self.acknowledge_message(basic_deliver.delivery_tag)
 
     def on_cancelok(self, unused_frame):
