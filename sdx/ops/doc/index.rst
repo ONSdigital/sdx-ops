@@ -1,19 +1,16 @@
-.. sdx-common documentation master file, created by
-   sphinx-quickstart on Thu Mar 30 10:40:08 2017.
-   You can adapt this file completely to your liking, but it should at least
-   contain the root `toctree` directive.
+..  Titling
+    ##++::==~~--''``
 
-Welcome to sdx-common's documentation!
-======================================
+SDX package guide
+:::::::::::::::::
+
+.. include:: ../../../README.rst
 
 .. toctree::
    :maxdepth: 2
    :caption: Contents:
 
-
-
-Indices and tables
-==================
+   cli
 
 * :ref:`genindex`
 * :ref:`modindex`
