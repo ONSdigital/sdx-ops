@@ -8,7 +8,11 @@ import os.path
 DFLT_LOCN = os.path.expanduser("~")
 
 __doc__ = """
-SDX CLI Interface
+Defines a common CLI for SDX tooling.
+
+Operation via CLI requires a set of common options.
+
+ 
 """
 
 
