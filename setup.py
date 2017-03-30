@@ -80,7 +80,7 @@ setup(
         ],
         "docbuild": [
             "sphinx-argparse>=0.1.17",
-            "sphinxcontrib-seqdiag>=0.9.5",
+            "sphinxcontrib-seqdiag>=0.8.5",
             "sphinx_rtd_theme>=0.2.4",
         ],
     },
