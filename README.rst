@@ -34,3 +34,12 @@ Assuming a Python 3.5 virtual environment at ``~/py3.5``:
 #. Install source package with pip::
 
     ~/py3.5/bin/pip install -U dist/sdx-common-x.y.z.tar.gz
+
+#. Install extra dependencies for development and building documentation::
+
+    ~/py3.5/bin/pip install .[dev,docbuild]
+
+#. Build documentation pages::
+
+    ~/py3.5/bin/sphinx-build sdx/ops/doc sdx/ops/doc/html
+
