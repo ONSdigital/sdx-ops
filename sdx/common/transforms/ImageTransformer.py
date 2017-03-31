@@ -80,11 +80,9 @@ class ImageTransformer(object):
         """Renumber the image sequence extracted from pdf
 
         :param str path: The location of the working directory.
-        :param nmbr_seq: The file name of the PDF document.
-        :type nmbr_seq: generator
-
-        The implementation delegates to
-        :py:class:`sdx.common.transforms.PDFTransformer.PDFTransformer`.
+        :param nmbr_seq: A sequence or generator of integers.
+        :type nmbr_seq: list or generator.
+        :return: A generator of file paths.
 
         """
         locn, baseName = os.path.split(path)
@@ -213,13 +211,3 @@ class ImageTransformer(object):
 
         result = r.json()
         return result['sequence_no']
-
-
-def parser(description=__doc__):
-    rv = argparse.ArgumentParser(
-        description,
-    )
-    rv.add_argument(
-        "--survey", required=True,
-        help="Set a path to the survey JSON file.")
-    return rv
