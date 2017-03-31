@@ -22,7 +22,7 @@ from sdx.common.survey import Survey
 from sdx.common.transforms.PDFTransformer import PDFTransformer
 
 __doc__ = """
-SDX Image Transformer.
+The SDX Image Transformer:
 
 Example:
 
@@ -37,18 +37,16 @@ class ImageTransformer(object):
     session = requests.Session()
 
     @staticmethod
-    def create_pdf(survey, data):
-        '''
-        Create a pdf which will be used as the basis for images
-        '''
-        pdf_transformer = PDFTransformer(survey, data)
-        return pdf_transformer.render_to_file()
-
-    @staticmethod
     def extract_pdf_images(path, f_name):
-        '''
-        Extract all pdf pages as jpegs
-        '''
+        """Extract pages from a PDF document.
+
+        :param str path: The location of the working directory.
+        :param str f_name: The file name of the PDF document.
+        :return: A sorted sequence of image file names.
+
+        This method delegates to the *pdftoppm* utility.
+
+        """
         rootName, _ = os.path.splitext(f_name)
         subprocess.call(
             ["pdftoppm", "-jpeg", f_name, rootName],
@@ -79,9 +77,16 @@ class ImageTransformer(object):
         return sequence_numbers
 
     def create_image_sequence(self, path, nmbr_seq=None):
-        '''
-        Renumber the image sequence extracted from pdf
-        '''
+        """Renumber the image sequence extracted from pdf
+
+        :param str path: The location of the working directory.
+        :param nmbr_seq: The file name of the PDF document.
+        :type nmbr_seq: generator
+
+        The implementation delegates to
+        :py:class:`sdx.common.transforms.PDFTransformer.PDFTransformer`.
+
+        """
         locn, baseName = os.path.split(path)
         self.images = ImageTransformer.extract_pdf_images(locn, baseName)
         nmbr_seq = nmbr_seq or self.get_image_sequence_numbers()
@@ -218,29 +223,3 @@ def parser(description=__doc__):
         "--survey", required=True,
         help="Set a path to the survey JSON file.")
     return rv
-
-
-def main(args):
-    log = logging.getLogger("ImageTransformer")
-    fp = os.path.expanduser(os.path.abspath(args.survey))
-    with open(fp, "r") as f_obj:
-        survey = json.load(f_obj)
-
-    data = json.load(sys.stdin)
-    tx = ImageTransformer(log, survey, data)
-    path = tx.create_pdf(survey, data)
-    images = list(tx.create_image_sequence(path, nmbr_seq=itertools.count()))
-    index = tx.create_image_index(images)
-    zipfile = tx.create_zip(images, index)
-    sys.stdout.write(zipfile)
-    return 0
-
-
-def run():
-    p = parser()
-    args = p.parse_args()
-    rv = main(args)
-    sys.exit(rv)
-
-if __name__ == "__main__":
-    run()
