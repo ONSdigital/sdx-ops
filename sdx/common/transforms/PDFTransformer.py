@@ -15,14 +15,14 @@ from reportlab.platypus import SimpleDocTemplate, Table, TableStyle, Paragraph
 from reportlab.lib.enums import TA_LEFT, TA_CENTER
 
 __doc__ = """
-SDX PDF Transformer.
+The SDX PDF Transformer:
 
-Example:
-
-python transform/transformers/PDFTransformer.py --survey transform/surveys/144.0001.json \\
-< tests/replies/ukis-01.json > output.pdf
+    #. Accepts respondent data in JSON format.
+    #. Looks up the corresponding survey definition.
+    #. Creates a PDF document of the returned survey. 
 
 """
+
 
 styles = getSampleStyleSheet()
 
@@ -120,6 +120,14 @@ class PDFTransformer(object):
 
 
 def parser(description=__doc__):
+    description = """
+    Example::
+
+        python transform/transformers/PDFTransformer.py
+        --survey transform/surveys/144.0001.json
+        < tests/replies/ukis-01.json > output.pdf
+
+    """
     rv = argparse.ArgumentParser(
         description,
     )

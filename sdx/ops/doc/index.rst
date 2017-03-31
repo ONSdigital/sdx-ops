@@ -10,7 +10,7 @@ SDX package guide
    :maxdepth: 2
    :caption: Contents:
 
-   cli
+   transformers
 
 * :ref:`genindex`
 * :ref:`modindex`
