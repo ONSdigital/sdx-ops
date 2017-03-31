@@ -4,6 +4,7 @@ import datetime
 from functools import partial
 import itertools
 import json
+import os.path
 import re
 import unittest
 import zipfile
@@ -570,6 +571,29 @@ class PackingTests(unittest.TestCase):
             "EDC_QImages/Images/S000000006.JPG",
             "EDC_QImages/Images/S000000007.JPG",
             "EDC_QImages/Images/S000000008.JPG",
-            "EDC_QImages/Index/EDC_134_20170301_1000.csv"
+            "EDC_QImages/Index/EDC_134_20170301_0000.csv"
         ]
         self.assertEqual(expected, actual)
+
+    def test_image_sequence_number(self):
+        settings = PackingTests.Settings("\\NFS", "SDX")
+        response = {
+            "survey_id": "134",
+            "tx_id": "27923934-62de-475c-bc01-433c09fd38b8",
+            "collection": {
+                "instrument_id": "0005",
+                "period": "201704"
+            },
+            "metadata": {
+                "user_id": "123456789",
+                "ru_ref": "12345678901A"
+            },
+            "submitted_at": "2017-04-12T13:01:26Z",
+            "data": {}
+        }
+        seq_nr = 12345
+        tfr = TestTransformer(response, seq_nr=seq_nr)
+        zf = zipfile.ZipFile(tfr.pack(settings=settings, img_seq=itertools.count(), tmp=None))
+        fn = next(i for i in zf.namelist() if os.path.splitext(i)[1] == ".csv")
+        bits = os.path.splitext(fn)[0].split("_")
+        self.assertEqual(seq_nr, int(bits[-1]))
