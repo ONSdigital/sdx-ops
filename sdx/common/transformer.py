@@ -14,19 +14,20 @@ from sdx.common.survey import Survey
 from sdx.common.transforms.ImageTransformer import ImageTransformer
 from sdx.common.transforms.PDFTransformer import PDFTransformer
 
-__doc__ = """Transform MWSS survey data into formats required downstream.
-
-The class API is used by the SDX transform service.
-Additionally this module will run as a script from the command line:
-
-python -m transform.transformers.MWSSTransformer \
-< tests/replies/eq-mwss.json > test-output.zip
-
-"""
+__doc__ = "Transform survey data into formats required downstream."
 
 
 class Transformer:
 
+    """A base class for SDX transformers.
+
+    Subclasses should define the contents of the following class variables:
+
+        * :py:const:`defn`
+        * :py:const:`package`
+        * :py:const:`pattern`
+
+    """
     #: Transformer subclasses declare their transforms in this class variable.
     #: Each element is a 3-tuple consisting of:
     #:
@@ -43,6 +44,16 @@ class Transformer:
     #:  ]
     #:
     defn = []
+
+    #: Defines the package where survey definitions can be found.
+    #: For deployed Python packages, this will be a dotted package name.
+    #: If your Transformer class is deployed from a source repository,
+    #: you should set this class variable to `__name__`.
+    package = "sdx.common"
+
+    #: Defines a search pattern for survey definitions based on identifiers.
+    #: The path is relative to the location specified by :py:const:`package` above.
+    pattern = "../surveys/{survey_id}.{inst_id}.json"
 
     @classmethod
     def ops(cls):
