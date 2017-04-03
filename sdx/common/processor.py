@@ -32,8 +32,9 @@ class Processor:
         """Calculate the weighted sum of a question group.
 
         :param str qid: The question id.
-        :param data: The full survey data
+        :param data: The full survey data.
         :type data: dict(str, str)
+        :param default: The default value for the question.
         :param weights: A sequence of 2-tuples giving the weight value for each
             question in the group.
         :type weights: [(str, number)]
@@ -49,7 +50,17 @@ class Processor:
 
     @staticmethod
     def evaluate(qid, data, default, *args, group=[], convert=bool, op=operator.or_, **kwargs):
-        """Perform a map/reduce evaluation of a question group."""
+        """Perform a map/reduce evaluation of a question group.
+
+        :param str qid: The question id.
+        :param data: The full survey data.
+        :type data: dict(str, str)
+        :param default: The default value for the question.
+        :param group: A sequence of question ids.
+        :param convert: A type or function to convert the group values.
+        :param op: A binary operator or function to reduce data to a single value.
+ 
+        """
         try:
             group_vals = [data.get(qid, None)] + [data.get(q, None) for q in group]
             data = [convert(i) for i in group_vals if i is not None]
@@ -59,7 +70,15 @@ class Processor:
 
     @staticmethod
     def mean(qid, data, default, *args, group=[], **kwargs):
-        """Calculate the mean of all fields in a question group."""
+        """Calculate the mean of all fields in a question group.
+
+        :param str qid: The question id.
+        :param data: The full survey data.
+        :type data: dict(str, str)
+        :param default: The default value for the question.
+        :param group: A sequence of question ids.
+
+        """
         try:
             group_vals = [data.get(qid, None)] + [data.get(q, None) for q in group]
             data = [Decimal(i) for i in group_vals if i is not None]
@@ -71,7 +90,15 @@ class Processor:
 
     @staticmethod
     def events(qid, data, default, *args, group=[], **kwargs):
-        """Return a sequence of time events from a question group."""
+        """Return a sequence of time events from a question group.
+
+        :param str qid: The question id.
+        :param data: The full survey data.
+        :type data: dict(str, str)
+        :param default: The default value for the question.
+        :param group: A sequence of question ids.
+
+        """
         try:
             group_vals = [data.get(qid, None)] + [data.get(q, None) for q in group]
             data = sorted(filter(
@@ -91,6 +118,12 @@ class Processor:
         This method provides an opportunity for validating the string against
         the survey definition, though this has not been a requirement so far.
 
+        :param str qid: The question id.
+        :param data: The full survey data.
+        :type data: dict(str, str)
+        :param default: The default value for the question.
+        :param dict survey: The survey definition.
+
         """
         try:
             return type(default)(data[qid])
@@ -99,7 +132,14 @@ class Processor:
 
     @staticmethod
     def unsigned_integer(qid, data, default, *args, **kwargs):
-        """Process a string as an unsigned integer."""
+        """Process a string as an unsigned integer.
+
+        :param str qid: The question id.
+        :param data: The full survey data.
+        :type data: dict(str, str)
+        :param default: The default value for the question.
+
+        """
         try:
             rv = int(data.get(qid, default))
         except ValueError:
@@ -109,9 +149,16 @@ class Processor:
 
     @staticmethod
     def percentage(qid, data, default, *args, **kwargs):
-        """Process a string as a percentage."""
+        """Process a string as a number, checking that it is valid as a percentage.
+
+        :param str qid: The question id.
+        :param data: The full survey data.
+        :type data: dict(str, str)
+        :param default: The default value for the question.
+
+        """
         try:
-            rv = int(data.get(qid, default))
+            rv = Decimal(data.get(qid, default))
         except ValueError:
             return default
         else:
