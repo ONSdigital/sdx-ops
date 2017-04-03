@@ -10,6 +10,7 @@ SDX package guide
    :maxdepth: 2
    :caption: Contents:
 
+   processor
    transformers
    cli
 

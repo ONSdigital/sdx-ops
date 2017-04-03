@@ -27,6 +27,21 @@ python -m transform.transformers.MWSSTransformer \
 
 class Transformer:
 
+    #: Transformer subclasses declare their transforms in this class variable.
+    #: Each element is a 3-tuple consisting of:
+    #:
+    #: #. An integer or range corresponding to one or more question ids.
+    #: #. A default value for the question(s).
+    #: #. A :ref:`Processing function <processors>`.
+    #:
+    #: Eg, to declare question ids 151, 152, 153 as unsigned integers with a default
+    #: of 0::
+    #:
+    #:  defn = [
+    #:   (range(151, 154, 1), 0, Processor.unsigned_integer),
+    #:
+    #:  ]
+    #:
     defn = []
 
     @classmethod

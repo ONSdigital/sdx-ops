@@ -5,8 +5,14 @@ import operator
 from sdx.common.survey import Survey
 
 
+__doc__ = """
+The processor module collects business logic processing functions under a single
+namespace so they can be used in :ref:`transformers`.
+
+"""
+
 class Processor:
-    """Apply operations to data.
+    """Business logic operations on data.
 
     These methods are used to perform business logic on survey data.
     They are mostly concerned with combining multiple fields into a
@@ -14,8 +20,8 @@ class Processor:
 
     Principles for processor methods:
 
-    * Method is responsible for range check according to own logic.
-    * Parametrisation is possible; use functools.partial to bind arguments.
+    * The method is responsible for range check according to its own logic.
+    * Parametrisation is possible; use `functools.partial` to bind arguments.
     * Return data of the same type as the supplied default.
     * On any error, return the default.
 
@@ -23,7 +29,16 @@ class Processor:
 
     @staticmethod
     def aggregate(qid, data, default, *args, weights=[], **kwargs):
-        """Calculate the weighted sum of a question group."""
+        """Calculate the weighted sum of a question group.
+
+        :param str qid: The question id.
+        :param data: The full survey data
+        :type data: dict(str, str)
+        :param weights: A sequence of 2-tuples giving the weight value for each
+            question in the group.
+        :type weights: [(str, number)]
+ 
+        """
         try:
             return type(default)(
                 Decimal(data.get(qid, 0)) +

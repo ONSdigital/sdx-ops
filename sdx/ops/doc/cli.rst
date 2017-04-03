@@ -3,8 +3,8 @@
 
 .. _commands:
 
-Commands
-::::::::
+Tooling
+:::::::
 
 A transformer can be called from the command line for testing or debugging purposes.
 

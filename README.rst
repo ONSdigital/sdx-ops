@@ -4,7 +4,10 @@
 SDX-common
 ::::::::::
 
-Utilities and classes for SDX apps.
+Utilities and classes for SDX apps. There are two distinct packages:
+
+    * sdx.common_
+    * sdx.ops_
 
 sdx.common
 ==========
