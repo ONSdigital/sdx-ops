@@ -11,6 +11,7 @@ SDX package guide
    :caption: Contents:
 
    transformers
+   cli
 
 * :ref:`genindex`
 * :ref:`modindex`

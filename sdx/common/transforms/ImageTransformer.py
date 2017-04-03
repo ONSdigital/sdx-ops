@@ -24,11 +24,6 @@ from sdx.common.transforms.PDFTransformer import PDFTransformer
 __doc__ = """
 The SDX Image Transformer:
 
-Example:
-
-python -m transform.transformers.ImageTransformer --survey transform/surveys/144.0001.json \\
-< tests/replies/ukis-01.json > output.zip
-
 """
 
 
