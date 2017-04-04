@@ -8,14 +8,14 @@ from setuptools import setup
 
 try:
     # For setup.py install
-    from sdx.ops import __version__ as version
+    from sdx.common import __version__ as version
 except ImportError:
     # For pip installations
     version = str(
         ast.literal_eval(
             open(os.path.join(
                 os.path.dirname(__file__),
-                "sdx", "ops", "__init__.py"),
+                "sdx", "common", "__init__.py"),
                 'r').read().split("=")[-1].strip()
         )
     )
@@ -30,7 +30,7 @@ installRequirements = [
 ]
 
 setup(
-    name="sdx-ops",
+    name="sdx-common",
     version=version,
     description="Operations scripts for SDX deployment and administration.",
     author="D Haynes",
@@ -44,12 +44,20 @@ setup(
         "License :: OSI Approved :: Apache Software License",
     ],
     packages=[
-        "sdx.ops",
-        "sdx.ops.test",
         "sdx.common",
         "sdx.common.test",
+        "sdx.common.formats",
+        "sdx.common.formats.test",
+        "sdx.common.transforms",
+        "sdx.common.transforms.test",
     ],
     package_data={
+        "sdx.common": [
+            "requirements.txt",
+        ],
+        "sdx.common.test": [
+            "data/*.json",
+        ],
         "sdx.ops": [
             "doc/*.rst",
             "doc/_templates/*.css",
@@ -71,9 +79,9 @@ setup(
             "pep8>=1.6.2",
         ],
         "docbuild": [
-            "babel>=2.2.0",
-            "sphinx-argparse>=0.1.15",
-            "sphinxcontrib-seqdiag>=0.8.4",
+            "sphinx-argparse>=0.1.17",
+            "sphinxcontrib-seqdiag>=0.8.5",
+            "sphinx_rtd_theme>=0.2.4",
         ],
     },
     tests_require=[

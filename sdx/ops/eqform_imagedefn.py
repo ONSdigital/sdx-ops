@@ -27,9 +27,9 @@ class ImageDefinition:
     tag = re.compile("<.*?>")
 
     @staticmethod
-    def root(title, surveyId, formType):
+    def root(title, survey_id, form_type):
         return [
-            ("title", title), ("survey_id", surveyId), ("form_type", formType),
+            ("title", title), ("survey_id", survey_id), ("form_type", form_type),
             ("question_groups", []),
         ]
 
@@ -40,10 +40,10 @@ class ImageDefinition:
         ]
 
     @staticmethod
-    def question(number, title, text, questionId, typ, options):
+    def question(number, title, text, question_id, typ, options):
         return [
             ("number", number), ("title", title),
-            ("text", text), ("question_id", questionId), ("type", typ),
+            ("text", text), ("question_id", question_id), ("type", typ),
             ("options", options)
         ]
 
@@ -55,8 +55,8 @@ class ImageDefinition:
         rv = OrderedDict(
             ImageDefinition.root(
                 title=data["title"],
-                surveyId=data["survey_id"],
-                formType=data["questionnaire_id"],
+                survey_id=data["survey_id"],
+                form_type=data["questionnaire_id"],
             )
         )
         for g in data.get("groups", []):
@@ -80,7 +80,7 @@ class ImageDefinition:
                                                 number=number,
                                                 title=ImageDefinition.tag.sub("", title),
                                                 text=ImageDefinition.tag.sub("", o["label"]),
-                                                questionId=o.get("q_code"),
+                                                question_id=o.get("q_code"),
                                                 typ=typ,
                                                 options=[o["value"]],
                                             )
@@ -94,7 +94,7 @@ class ImageDefinition:
                                             number=number,
                                             title=ImageDefinition.tag.sub("", title),
                                             text=ImageDefinition.tag.sub("", text),
-                                            questionId=a.get("q_code"),
+                                            question_id=a.get("q_code"),
                                             typ=typ,
                                             options=[
                                                 o.get("value") for o in a.get("options", [])
