@@ -56,7 +56,15 @@ def add_transformer_options(parser):
     return parser
 
 
-def parser(description=__doc__):
+def parser(description):
     return argparse.ArgumentParser(
         description,
+    )
+
+
+def transformer_cli(description=__doc__):
+    return add_transformer_options(
+        add_common_options(
+            parser(description)
+        )
     )

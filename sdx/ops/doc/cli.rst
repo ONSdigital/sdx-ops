@@ -19,6 +19,6 @@ Command Line Interface
 .. automodule:: sdx.common.cli
 
 .. argparse::
-   :ref: sdx.common.cli.parser
+   :ref: sdx.common.cli.transformer_cli
    :prog: SDX
    :nodefault:
