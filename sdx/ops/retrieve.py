@@ -2,6 +2,7 @@
 #   coding: UTF-8
 
 import argparse
+import os.path
 import sys
 
 from pymongo import MongoClient
@@ -11,12 +12,25 @@ Retrieve survey results from the SDX store.
 
 """
 
+DFLT_LOCN = os.path.expanduser("~")
+
+
 def main(args):
+    client = MongoClient(args.url)
+    collection = client.sdx_store.responses
     for line in args.input:
-        print(line, file=sys.stderr)
+        tx_id = line.strip()
+        doc = collection.find_one({"tx_id": tx_id})
+        if doc is None:
+            print("No data for {0}".format(tx_id), file=sys.stderr)
+        else:
+            with open(os.path.join(args.work, tx_id + ".json"), "w") as output:
+                output.write(doc)
+            print("Retrieved data for {0}".format(tx_id), file=sys.stderr)
+
 
 def parser(description=__doc__):
-    rv =  argparse.ArgumentParser(
+    rv = argparse.ArgumentParser(
         description,
     )
     parser.add_argument(
@@ -25,10 +39,14 @@ def parser(description=__doc__):
         help="Designate a text file of transaction ids."
     )
     rv.add_argument(
-        "--url", required=True,
+        "--url", required=False, default="mongodb://localhost:27017",
         help="Set the URL to the SDX store."
     )
+    parser.add_argument(
+        "--work", default=DFLT_LOCN,
+        help="Set a path to the working directory.")
     return rv
+
 
 def run():
     p = parser()
