@@ -12,6 +12,7 @@ SDX package guide
 
    processor
    transformers
+   formats
    cli
 
 * :ref:`genindex`
