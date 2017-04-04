@@ -2,9 +2,11 @@
 #   coding: UTF-8
 
 import argparse
+import json
 import os.path
 import sys
 
+import bson.json_util
 from pymongo import MongoClient
 
 __doc__ = """
@@ -25,7 +27,7 @@ def main(args):
             print("No data for {0}".format(tx_id), file=sys.stderr)
         else:
             with open(os.path.join(args.work, tx_id + ".json"), "w") as output:
-                output.write(doc)
+                output.write(bson.json_util.dumps(doc))
             print("Retrieved data for {0}".format(tx_id), file=sys.stderr)
 
 
@@ -33,7 +35,7 @@ def parser(description=__doc__):
     rv = argparse.ArgumentParser(
         description,
     )
-    parser.add_argument(
+    rv.add_argument(
         "input",
         nargs="?", type=argparse.FileType("r"), default=sys.stdin,
         help="Designate a text file of transaction ids."
@@ -42,7 +44,7 @@ def parser(description=__doc__):
         "--url", required=False, default="mongodb://localhost:27017",
         help="Set the URL to the SDX store."
     )
-    parser.add_argument(
+    rv.add_argument(
         "--work", default=DFLT_LOCN,
         help="Set a path to the working directory.")
     return rv
