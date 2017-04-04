@@ -22,7 +22,7 @@ def main(args):
     collection = client.sdx_store.responses
     for line in args.input:
         tx_id = line.strip()
-        doc = collection.find_one({"tx_id": tx_id})
+        doc = collection.find_one({"survey_response.tx_id": tx_id})
         if doc is None:
             print("No data for {0}".format(tx_id), file=sys.stderr)
         else:
