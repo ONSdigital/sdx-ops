@@ -4,6 +4,7 @@
 import argparse
 import logging
 import os.path
+import sys
 
 DFLT_LOCN = os.path.expanduser("~")
 
@@ -29,15 +30,35 @@ def add_common_options(parser):
         action="store_const", dest="log_level",
         const=logging.DEBUG, default=logging.INFO,
         help="Increase the verbosity of output")
+    return parser
+
+def add_transformer_options(parser):
     parser.add_argument(
         "--work", default=DFLT_LOCN,
-        help="Set a path to the working directory")
+        help="Set a path to the working directory.")
+    parser.add_argument(
+        "--batch_nr", type=int, default=0,
+        help="Set a batch number for the data output.")
+    parser.add_argument(
+        "--img_nr", type=int, default=0,
+        help="Set a starting number for the image sequence.")
+    parser.add_argument(
+        "--seq_nr", type=int, default=None,
+        help="Set a sequence number for the data output.")
+    parser.add_argument(
+        "input",
+        nargs="?", type=argparse.FileType("r"), default=sys.stdin,
+        help="Specify survey data."
+    )
+    parser.add_argument(
+        "output",
+        nargs="?", type=argparse.FileType("wb"), default=sys.stdout.buffer,
+        help="Specify output file."
+    )
     return parser
 
 
 def parser(description=__doc__):
-    rv = argparse.ArgumentParser(
+    return argparse.ArgumentParser(
         description,
     )
-    rv = add_common_options(rv)
-    return rv
