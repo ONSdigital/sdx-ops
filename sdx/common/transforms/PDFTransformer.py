@@ -19,7 +19,7 @@ The SDX PDF Transformer:
 
     #. Accepts respondent data in JSON format.
     #. Looks up the corresponding survey definition.
-    #. Creates a PDF document of the returned survey. 
+    #. Creates a PDF document of the returned survey.
 
 """
 

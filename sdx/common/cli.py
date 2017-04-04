@@ -13,7 +13,7 @@ Defines a common CLI for SDX tooling.
 
 Operation via CLI requires a set of common options.
 
- 
+
 """
 
 
@@ -32,18 +32,16 @@ def add_common_options(parser):
         help="Increase the verbosity of output")
     return parser
 
+
 def add_transformer_options(parser):
     parser.add_argument(
         "--work", default=DFLT_LOCN,
         help="Set a path to the working directory.")
     parser.add_argument(
-        "--batch_nr", type=int, default=0,
-        help="Set a batch number for the data output.")
-    parser.add_argument(
         "--img_nr", type=int, default=0,
         help="Set a starting number for the image sequence.")
     parser.add_argument(
-        "--seq_nr", type=int, default=None,
+        "--seq_nr", type=int, default=0,
         help="Set a sequence number for the data output.")
     parser.add_argument(
         "input",

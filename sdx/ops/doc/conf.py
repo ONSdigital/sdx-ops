@@ -23,7 +23,6 @@
 
 import sys
 import os
-import shlex
 
 try:
     import pkg_resources
@@ -181,6 +180,3 @@ texinfo_documents = [
      author, 'sdx-common', 'One line description of project.',
      'Miscellaneous'),
 ]
-
-
-

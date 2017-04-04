@@ -138,7 +138,9 @@ class Transformer:
             doc.build(PDFTransformer.get_elements(survey, self.response))
 
             # Create page images from PDF
-            img_tfr = ImageTransformer(self.log, settings, survey, self.response, self.ids.seq_nr)
+            img_tfr = ImageTransformer(
+                self.log, settings, survey, self.response, self.ids.seq_nr
+            )
             images = list(img_tfr.create_image_sequence(fp, nmbr_seq=img_seq))
             for img in images:
                 f_name = os.path.basename(img)

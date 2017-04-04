@@ -1,16 +1,11 @@
 #!/usr/bin/env python
 #   coding: UTF-8
 
-import argparse
 import glob
 from io import BytesIO
-import itertools
-import json
-import logging
 import os.path
 import shutil
 import subprocess
-import sys
 import zipfile
 
 import requests
@@ -19,7 +14,6 @@ from requests.packages.urllib3.exceptions import MaxRetryError
 from requests.packages.urllib3.util.retry import Retry
 
 from sdx.common.survey import Survey
-from sdx.common.transforms.PDFTransformer import PDFTransformer
 
 __doc__ = """
 The SDX Image Transformer:

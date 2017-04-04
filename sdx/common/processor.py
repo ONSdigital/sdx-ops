@@ -11,6 +11,7 @@ namespace so they can be used in :ref:`transformers`.
 
 """
 
+
 class Processor:
     """Business logic operations on data.
 
@@ -38,7 +39,7 @@ class Processor:
         :param weights: A sequence of 2-tuples giving the weight value for each
             question in the group.
         :type weights: [(str, number)]
- 
+
         """
         try:
             return type(default)(
@@ -59,7 +60,7 @@ class Processor:
         :param group: A sequence of question ids.
         :param convert: A type or function to convert the group values.
         :param op: A binary operator or function to reduce data to a single value.
- 
+
         """
         try:
             group_vals = [data.get(qid, None)] + [data.get(q, None) for q in group]
