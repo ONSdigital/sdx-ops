@@ -27,7 +27,9 @@ def main(args):
         pattern = re.compile(line.strip())
         doc = collection.find_one({args.field: pattern})
         if doc is None:
-            print("No {0} values match {1}".format(args.field, pattern), file=sys.stderr)
+            print("No {0} values match {1.pattern}".format(
+                args.field, pattern
+            ), file=sys.stderr)
         else:
             tx_id = doc["survey_response"]["tx_id"]
             with open(os.path.join(args.work, tx_id + ".json"), "w") as output:
