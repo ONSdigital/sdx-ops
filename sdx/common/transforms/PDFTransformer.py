@@ -15,11 +15,7 @@ from reportlab.platypus import SimpleDocTemplate, Table, TableStyle, Paragraph
 from reportlab.lib.enums import TA_LEFT, TA_CENTER
 
 __doc__ = """
-The SDX PDF Transformer:
-
-    #. Accepts respondent data in JSON format.
-    #. Looks up the corresponding survey definition.
-    #. Creates a PDF document of the returned survey.
+The SDX PDF Transformer class provides styles for page creation.
 
 """
 
@@ -117,43 +113,3 @@ class PDFTransformer(object):
     @staticmethod
     def get_localised_date(date_to_transform, timezone='Europe/London'):
         return arrow.get(date_to_transform).to(timezone).format("DD MMMM YYYY HH:mm:ss")
-
-
-def parser(description=__doc__):
-    description = """
-    Example::
-
-        python transform/transformers/PDFTransformer.py
-        --survey transform/surveys/144.0001.json
-        < tests/replies/ukis-01.json > output.pdf
-
-    """
-    rv = argparse.ArgumentParser(
-        description,
-    )
-    rv.add_argument(
-        "--survey", required=True,
-        help="Set a path to the survey JSON file.")
-    return rv
-
-
-def main(args):
-    fp = os.path.expanduser(os.path.abspath(args.survey))
-    with open(fp, "r") as fobj:
-        survey = json.load(fobj)
-
-    data = json.load(sys.stdin)
-    tx = PDFTransformer(survey, data)
-    output = tx.render()
-    sys.stdout.write(output.decode("latin-1"))
-    return 0
-
-
-def run():
-    p = parser()
-    args = p.parse_args()
-    rv = main(args)
-    sys.exit(rv)
-
-if __name__ == "__main__":
-    run()
