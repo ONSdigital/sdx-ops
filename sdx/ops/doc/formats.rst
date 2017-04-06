@@ -6,7 +6,7 @@
 Formatters
 ::::::::::
 
-Downstream systems injest transformed survey data in several formats.
+Downstream systems ingest transformed survey data in several formats.
 
 Formatter classes are stateless namespaces for functions which convert survey data
 to those downstream formats.
