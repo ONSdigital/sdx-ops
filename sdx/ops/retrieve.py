@@ -2,7 +2,6 @@
 #   coding: UTF-8
 
 import argparse
-import json
 import os.path
 import sys
 

@@ -1,11 +1,7 @@
 #!/usr/bin/env python
 #   coding: UTF-8
 
-import argparse
 from io import BytesIO
-import json
-import os
-import sys
 
 import arrow
 from reportlab.lib import colors
