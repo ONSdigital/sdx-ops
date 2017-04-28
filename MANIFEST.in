@@ -1,3 +1,1 @@
 include *.txt
-recursive-include sdx/common *.json
-recursive-include sdx/ops *.css *.jpg *.js *.png *.rst

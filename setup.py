@@ -8,14 +8,14 @@ from setuptools import setup
 
 try:
     # For setup.py install
-    from sdx.common import __version__ as version
+    from sdx.ops import __version__ as version
 except ImportError:
     # For pip installations
     version = str(
         ast.literal_eval(
             open(os.path.join(
                 os.path.dirname(__file__),
-                "sdx", "common", "__init__.py"),
+                "sdx", "ops", "__init__.py"),
                 'r').read().split("=")[-1].strip()
         )
     )
@@ -30,7 +30,7 @@ installRequirements = [
 ]
 
 setup(
-    name="sdx-common",
+    name="sdx-ops",
     version=version,
     description="Operations scripts for SDX deployment and administration.",
     author="D Haynes",
@@ -44,44 +44,14 @@ setup(
         "License :: OSI Approved :: Apache Software License",
     ],
     packages=[
-        "sdx.common",
-        "sdx.common.test",
-        "sdx.common.formats",
-        "sdx.common.formats.test",
-        "sdx.common.transforms",
-        "sdx.common.transforms.test",
+        "sdx.ops",
+        "sdx.ops.test",
     ],
-    package_data={
-        "sdx.common": [
-            "requirements.txt",
-        ],
-        "sdx.common.test": [
-            "data/*.json",
-        ],
-        "sdx.ops": [
-            "doc/*.rst",
-            "doc/_templates/*.css",
-            "doc/html/*.html",
-            "doc/html/*.js",
-            "doc/html/_sources/*",
-            "doc/html/_static/css/*",
-            "doc/html/_static/font/*",
-            "doc/html/_static/js/*",
-            "doc/html/_static/*.css",
-            "doc/html/_static/*.gif",
-            "doc/html/_static/*.js",
-            "doc/html/_static/*.png",
-        ],
-    },
+    package_data={},
     install_requires=installRequirements,
     extras_require={
         "dev": [
             "pep8>=1.6.2",
-        ],
-        "docbuild": [
-            "sphinx-argparse>=0.1.17",
-            "sphinxcontrib-seqdiag>=0.8.5",
-            "sphinx_rtd_theme>=0.2.4",
         ],
     },
     tests_require=[
