@@ -1,8 +1,8 @@
 ..  Titling
     ##++::==~~--''``
 
-SDX-common
-::::::::::
+SDX-ops
+:::::::
 
 Utilities to administer SDX apps. Consists of one package:
 
