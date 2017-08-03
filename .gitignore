@@ -1,0 +1,16 @@
+.DS_Store
+tests/__pycache__/
+__pycache__
+data/
+decoded/
+ready_to_import/
+jwt-test-keys/
+logs/
+*.pyc
+bin/
+include/
+lib/
+.Python
+pip-selfcheck.json
+coverage.xml
+.coverage

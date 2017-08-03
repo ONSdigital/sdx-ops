@@ -1,6 +1,9 @@
 ..  Titling
     ##++::==~~--''``
 
+.. image:: https://codecov.io/gh/ONSdigital/sdx-ops/branch/master/graph/badge.svg
+  :target: https://codecov.io/gh/ONSdigital/sdx-ops
+
 SDX-ops
 :::::::
 
